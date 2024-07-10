@@ -1,4 +1,4 @@
-name: Package Node Modules
+name: Build Release Artifacts
 
 on:
   push:
@@ -123,6 +123,27 @@ jobs:
 
           core.setOutput('upload_url', release.data.upload_url);
 
+    - name: Delete Existing Node Modules Asset
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.WORKFLOW_TOKEN }}
+        script: |
+          const version = process.env.VERSION;
+          const assets = await github.rest.repos.listReleaseAssets({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            release_id: context.payload.release.id
+          });
+
+          const asset = assets.data.find(a => a.name === 'node_modules.tar.gz');
+          if (asset) {
+            await github.rest.repos.deleteReleaseAsset({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              asset_id: asset.id
+            });
+          }
+
     - name: Upload Node Modules to Release
       uses: tanyagray/action-upload-release-asset@v1.1.3
       env:
@@ -132,6 +153,27 @@ jobs:
         asset_path: ./node_modules.tar.gz
         asset_name: node_modules.tar.gz
         asset_content_type: application/gzip
+
+    - name: Delete Existing Lua Scripts Asset
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.WORKFLOW_TOKEN }}
+        script: |
+          const version = process.env.VERSION;
+          const assets = await github.rest.repos.listReleaseAssets({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            release_id: context.payload.release.id
+          });
+
+          const asset = assets.data.find(a => a.name === 'lua-scripts.tar.gz');
+          if (asset) {
+            await github.rest.repos.deleteReleaseAsset({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              asset_id: asset.id
+            });
+          }
 
     - name: Upload Lua Scripts to Release
       uses: tanyagray/action-upload-release-asset@v1.1.3
@@ -143,6 +185,27 @@ jobs:
         asset_name: lua-scripts.tar.gz
         asset_content_type: application/gzip
 
+    - name: Delete Existing MongoDB Models Asset
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.WORKFLOW_TOKEN }}
+        script: |
+          const version = process.env.VERSION;
+          const assets = await github.rest.repos.listReleaseAssets({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            release_id: context.payload.release.id
+          });
+
+          const asset = assets.data.find(a => a.name === 'mongodb-models.tar.gz');
+          if (asset) {
+            await github.rest.repos.deleteReleaseAsset({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              asset_id: asset.id
+            });
+          }
+
     - name: Upload MongoDB Models to Release
       uses: tanyagray/action-upload-release-asset@v1.1.3
       env:
@@ -152,6 +215,27 @@ jobs:
         asset_path: ./mongodb-models.tar.gz
         asset_name: mongodb-models.tar.gz
         asset_content_type: application/gzip
+
+    - name: Delete Existing Deployment YAML Asset
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.WORKFLOW_TOKEN }}
+        script: |
+          const version = process.env.VERSION;
+          const assets = await github.rest.repos.listReleaseAssets({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            release_id: context.payload.release.id
+          });
+
+          const asset = assets.data.find(a => a.name === 'sera-deployment-single.yaml');
+          if (asset) {
+            await github.rest.repos.deleteReleaseAsset({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              asset_id: asset.id
+            });
+          }
 
     - name: Upload Deployment YAML to Release
       uses: tanyagray/action-upload-release-asset@v1.1.3
