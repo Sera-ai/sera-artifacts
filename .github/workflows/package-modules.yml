@@ -99,7 +99,7 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
       with:
-        upload_url: ${{ steps.create_update_release.outputs.upload_url }}
+        upload_url: ${{ steps.create_update_release.outputs.upload_url }}?name=node_modules.tar.gz
         asset_path: ./node_modules.tar.gz
         asset_name: node_modules.tar.gz
         asset_content_type: application/gzip
