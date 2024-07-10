@@ -33,20 +33,29 @@ jobs:
     - name: Package node_modules contents
       run: tar -czf node_modules.tar.gz -C node_modules .
 
-    - name: Package Lua Scripts contents
-      run: tar -czf lua-scripts.tar.gz -C sera-lua-scripts .
-
-    - name: Upload artifact
+    - name: Upload node_modules artifact
       uses: actions/upload-artifact@v3
       with:
         name: node_modules
         path: node_modules.tar.gz
 
-    - name: Upload artifact
+    - name: Package Lua Scripts contents
+      run: tar -czf lua-scripts.tar.gz -C sera-lua-scripts .
+
+    - name: Upload lua-scripts artifact
       uses: actions/upload-artifact@v3
       with:
         name: lua-scripts
         path: lua-scripts.tar.gz
+
+    - name: Package mongodb-models contents
+      run: tar -czf mongodb-models.tar.gz -C sera-mongodb-models .
+
+    - name: Upload mongodb-models artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: mongodb-models
+        path: mongodb-models.tar.gz
 
     - name: Merge YAML files
       run: |
@@ -134,7 +143,17 @@ jobs:
         asset_name: lua-scripts.tar.gz
         asset_content_type: application/gzip
 
-    - name: Upload Node Modules to Release
+    - name: Upload MongoDB Models to Release
+      uses: tanyagray/action-upload-release-asset@v1.1.3
+      env:
+          GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_update_release.outputs.upload_url }}
+        asset_path: ./mongodb-models.tar.gz
+        asset_name: mongodb-models.tar.gz
+        asset_content_type: application/gzip
+
+    - name: Upload Deployment YAML to Release
       uses: tanyagray/action-upload-release-asset@v1.1.3
       env:
           GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
@@ -143,4 +162,3 @@ jobs:
         asset_path: sera-k8s/deploy/sera-deployment-single.yaml
         asset_name: sera-deployment-single.yaml
         asset_content_type: application/yaml
-          
