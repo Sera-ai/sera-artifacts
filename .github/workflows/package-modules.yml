@@ -37,7 +37,7 @@ jobs:
       id: create_release
       uses: actions/github-script@v6
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.WORKFLOW_TOKEN }}
         script: |
           const tagName = `release-${new Date().toISOString().split('T')[0]}`;  // e.g., release-2024-07-10
           const releaseName = `Release ${new Date().toISOString().split('T')[0]}`;
