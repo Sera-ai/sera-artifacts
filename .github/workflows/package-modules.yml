@@ -1,4 +1,4 @@
-name: Build Release Artifacts
+name: Package Node Modules
 
 on:
   push:
@@ -121,6 +121,7 @@ jobs:
             }
           }
 
+          core.setOutput('release_id', release.data.id);
           core.setOutput('upload_url', release.data.upload_url);
 
     - name: Delete Existing Node Modules Asset
@@ -128,11 +129,11 @@ jobs:
       with:
         github-token: ${{ secrets.WORKFLOW_TOKEN }}
         script: |
-          const version = process.env.VERSION;
+          const releaseId = core.getInput('release_id');
           const assets = await github.rest.repos.listReleaseAssets({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            release_id: context.payload.release.id
+            release_id: releaseId
           });
 
           const asset = assets.data.find(a => a.name === 'node_modules.tar.gz');
@@ -159,11 +160,11 @@ jobs:
       with:
         github-token: ${{ secrets.WORKFLOW_TOKEN }}
         script: |
-          const version = process.env.VERSION;
+          const releaseId = core.getInput('release_id');
           const assets = await github.rest.repos.listReleaseAssets({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            release_id: context.payload.release.id
+            release_id: releaseId
           });
 
           const asset = assets.data.find(a => a.name === 'lua-scripts.tar.gz');
@@ -190,11 +191,11 @@ jobs:
       with:
         github-token: ${{ secrets.WORKFLOW_TOKEN }}
         script: |
-          const version = process.env.VERSION;
+          const releaseId = core.getInput('release_id');
           const assets = await github.rest.repos.listReleaseAssets({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            release_id: context.payload.release.id
+            release_id: releaseId
           });
 
           const asset = assets.data.find(a => a.name === 'mongodb-models.tar.gz');
@@ -221,11 +222,11 @@ jobs:
       with:
         github-token: ${{ secrets.WORKFLOW_TOKEN }}
         script: |
-          const version = process.env.VERSION;
+          const releaseId = core.getInput('release_id');
           const assets = await github.rest.repos.listReleaseAssets({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            release_id: context.payload.release.id
+            release_id: releaseId
           });
 
           const asset = assets.data.find(a => a.name === 'sera-deployment-single.yaml');
