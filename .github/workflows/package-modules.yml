@@ -159,6 +159,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
       with:
         upload_url: ${{ steps.create_update_release.outputs.upload_url }}
-        asset_path: sera-k8s/deploy/sera-deployment-single.yaml
+        asset_path: sera-k8s-scripts/deploy/sera-deployment-single.yaml
         asset_name: sera-deployment-single.yaml
         asset_content_type: application/yaml
