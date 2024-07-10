@@ -90,10 +90,9 @@ jobs:
           }
 
           core.setOutput('upload_url', release.data.upload_url);
-    - name: Upload Node Modules to Release
-      uses: Shopify/upload-to-release@v2.0.0
+    - name: Upload to release
+      uses: JasonEtco/upload-to-release@master
       with:
-        name: node_modules.tar.gz
-        path: ${{ steps.create_update_release.outputs.upload_url }}
-        content-type: application/gzip
-        repo-token: ${{ secrets.WORKFLOW_TOKEN }}
+        args: node_modules.tar.gz
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
