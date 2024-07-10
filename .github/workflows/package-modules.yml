@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write  # Add this line to ensure the token has the correct permissions
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,7 +24,7 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Package node_modules
+    - name: Package node_modules contents
       run: tar -czf node_modules.tar.gz -C node_modules .
 
     - name: Upload artifact
