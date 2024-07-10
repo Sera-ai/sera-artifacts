@@ -90,12 +90,10 @@ jobs:
           }
 
           core.setOutput('upload_url', release.data.upload_url);
-
     - name: Upload Node Modules to Release
-      uses: actions/upload-release-asset@v1
+      uses: Shopify/upload-to-release@v2.0.0
       with:
-        github-token: ${{ secrets.WORKFLOW_TOKEN }}
-        upload_url: ${{ steps.create_update_release.outputs.upload_url }}
-        asset_path: ./node_modules.tar.gz
-        asset_name: node_modules.tar.gz
-        asset_content_type: application/gzip
+        name: node_modules.tar.gz
+        path: ${{ steps.create_update_release.outputs.upload_url }}
+        content-type: application/gzip
+        repo-token: ${{ secrets.WORKFLOW_TOKEN }}
