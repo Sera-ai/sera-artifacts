@@ -22,7 +22,7 @@ jobs:
       run: npm install
 
     - name: Package node_modules
-      run: tar -czf node_modules.tar.gz node_modules
+      run: tar -czf node_modules.tar.gz -C node_modules .
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
@@ -34,15 +34,13 @@ jobs:
       id: create_release
       uses: actions/github-script@v6
       with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const { execSync } = require('child_process');
-          const fs = require('fs');
           const tagName = `release-${new Date().toISOString().split('T')[0]}`;  // e.g., release-2024-07-10
           const releaseName = `Release ${new Date().toISOString().split('T')[0]}`;
           const commitSha = context.sha;
 
-          // Create a new release
-          const response = await github.repos.createRelease({
+          const response = await github.rest.repos.createRelease({
             owner: context.repo.owner,
             repo: context.repo.repo,
             tag_name: tagName,
