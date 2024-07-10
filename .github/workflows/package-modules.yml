@@ -41,7 +41,7 @@ jobs:
       id: create_update_release
       uses: actions/github-script@v6
       with:
-        github-token: ${{ secrets.PAT_TOKEN }}
+        github-token: ${{ secrets.WORKFLOW_TOKEN }}
         script: |
           const version = process.env.VERSION;
           const tagName = `v${version}`;
