@@ -39,7 +39,7 @@ jobs:
         name: node_modules
         path: node_modules.tar.gz
 
-    - name: Create or Update Release
+    - name: Create or Update Release 
       id: create_update_release
       uses: actions/github-script@v6
       with:
