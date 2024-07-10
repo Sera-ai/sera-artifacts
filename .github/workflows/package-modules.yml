@@ -89,6 +89,12 @@ jobs:
             }
           }
 
+          try {
+            throw JSON.stringify(release.data)
+          }catch(error){
+            console.log(error)
+          }
+
           core.setOutput('upload_url', release.data.upload_url);
 
     - name: Output upload URL
