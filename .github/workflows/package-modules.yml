@@ -39,6 +39,18 @@ jobs:
         name: node_modules
         path: node_modules.tar.gz
 
+    - name: Merge YAML files
+      run: |
+        cd sera-k8s/deploy
+        echo "Merging YAML files..."
+        MERGED_YAML="sera-deployment-single.yaml"
+        > $MERGED_YAML  # Create an empty merged.yaml file
+        for file in *.yaml; do
+          cat $file >> $MERGED_YAML
+          echo "---" >> $MERGED_YAML
+        done
+        echo "Merged YAML files into $MERGED_YAML"
+
     - name: Create or Update Release 
       id: create_update_release
       uses: actions/github-script@v6
@@ -100,4 +112,14 @@ jobs:
         asset_path: ./node_modules.tar.gz
         asset_name: node_modules.tar.gz
         asset_content_type: application/gzip
+
+    - name: Upload Node Modules to Release
+      uses: tanyagray/action-upload-release-asset@v1.1.3
+      env:
+          GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_update_release.outputs.upload_url }}
+        asset_path: sera-k8s/deploy/sera-deployment-single.yaml
+        asset_name: sera-deployment-single.yaml
+        asset_content_type: application/yaml
           
