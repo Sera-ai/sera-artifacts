@@ -46,7 +46,7 @@ spec:
                 sleep 2
               done
       containers:
-        - name: sera-frontend-catalog
+        - name: sera-frontend
           image: ghcr.io/sera-ai/sera-frontend:latest
           imagePullPolicy: IfNotPresent
           command: ["/bin/sh", "-c"]
