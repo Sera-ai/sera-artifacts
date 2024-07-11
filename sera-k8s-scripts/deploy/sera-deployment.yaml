@@ -47,7 +47,7 @@ spec:
               done
       containers:
         - name: sera-frontend-catalog
-          image: frontend_catalog:latest
+          image: ghcr.io/sera-ai/sera-frontend:latest
           imagePullPolicy: IfNotPresent
           command: ["/bin/sh", "-c"]
           args: ["npm start"]
@@ -64,7 +64,7 @@ spec:
           ports:
             - containerPort: 12000
         - name: sera-backend-builder
-          image: backend_builder:latest
+          image: ghcr.io/sera-ai/sera-backend-core:latest
           volumeMounts:
             - name: node-modules
               mountPath: /workspace/node_modules
@@ -79,7 +79,7 @@ spec:
             - configMapRef:
                 name: sera-env-vars
         - name: sera-backend-socket
-          image: backend_socket:latest
+          image: ghcr.io/sera-ai/sera-backend-socket:latest
           volumeMounts:
             - name: node-modules
               mountPath: /workspace/node_modules
@@ -94,7 +94,7 @@ spec:
             - configMapRef:
                 name: sera-env-vars
         - name: sera-backend-sequencer
-          image: backend_sequencer:latest
+          image: ghcr.io/sera-ai/sera-backend-sequencer:latest
           volumeMounts:
             - name: node-modules
               mountPath: /workspace/node_modules
@@ -111,7 +111,7 @@ spec:
             - configMapRef:
                 name: sera-env-vars
         - name: sera-backend-processor
-          image: backend_processor:latest
+          image: ghcr.io/sera-ai/sera-backend-processor:latest
           volumeMounts:
             - name: node-modules
               mountPath: /workspace/node_modules

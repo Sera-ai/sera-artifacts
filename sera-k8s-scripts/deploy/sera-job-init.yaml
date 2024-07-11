@@ -23,7 +23,7 @@ spec:
           securityContext:
             runAsUser: 0
             runAsGroup: 0
-          command: ["sh", "-c", "set -x; ls -ld /mnt/node_modules; if [ -z \"$(find /mnt/node_modules -mindepth 1 -type d 2>/dev/null)\" ]; then echo 'No subdirectories found in /mnt/node_modules. Downloading and extracting node_modules.tar.gz'; curl -L -o /mnt/node_modules/node_modules.tar.gz https://github.com/Sera-ai/sera-public-test/releases/download/sera/node_modules.tar.gz && tar -xzvf /mnt/node_modules/node_modules.tar.gz -C /mnt/node_modules; else echo 'Subdirectories found in /mnt/node_modules. Skipping download and extraction'; fi"]
+          command: ["sh", "-c", "set -x; ls -ld /mnt/node_modules; if [ -z \"$(find /mnt/node_modules -mindepth 1 -type d 2>/dev/null)\" ]; then echo 'No subdirectories found in /mnt/node_modules. Downloading and extracting node_modules.tar.gz'; curl -L -o /mnt/node_modules/node_modules.tar.gz https://github.com/Sera-ai/sera-artifacts/releases/download/v1.0.0/node_modules.tar.gz && tar -xzvf /mnt/node_modules/node_modules.tar.gz -C /mnt/node_modules; else echo 'Subdirectories found in /mnt/node_modules. Skipping download and extraction'; fi"]
           volumeMounts:
             - name: node-modules
               mountPath: /mnt/node_modules
@@ -32,7 +32,7 @@ spec:
           securityContext:
             runAsUser: 0
             runAsGroup: 0
-          command: ["sh", "-c", "set -x; ls -ld /mnt/sera_models; if [ -z \"$(find /mnt/sera_models -mindepth 1 -type d 2>/dev/null)\" ]; then echo 'No subdirectories found in /mnt/sera_models. Downloading and extracting sera_models.tar.gz'; curl -L -o /mnt/sera_models/sera_models.tar.gz https://github.com/Sera-ai/sera-public-test/releases/download/sera/sera-models.tar.gz && tar -xzvf /mnt/sera_models/sera_models.tar.gz -C /mnt/sera_models; else echo 'Subdirectories found in /mnt/sera_models. Skipping download and extraction'; fi"]
+          command: ["sh", "-c", "set -x; ls -ld /mnt/sera_models; if [ -z \"$(find /mnt/sera_models -mindepth 1 -type d 2>/dev/null)\" ]; then echo 'No subdirectories found in /mnt/sera_models. Downloading and extracting sera_models.tar.gz'; curl -L -o /mnt/sera_models/sera_models.tar.gz https://github.com/Sera-ai/sera-artifacts/releases/download/v1.0.0/mongodb-models.tar.gz && tar -xzvf /mnt/sera_models/sera_models.tar.gz -C /mnt/sera_models; else echo 'Subdirectories found in /mnt/sera_models. Skipping download and extraction'; fi"]
           volumeMounts:
             - name: sera-models
               mountPath: /mnt/sera_models
@@ -41,7 +41,7 @@ spec:
           securityContext:
             runAsUser: 0
             runAsGroup: 0
-          command: ["sh", "-c", "set -x; ls -ld /mnt/lua-scripts; if [ -z \"$(find /mnt/lua-scripts -mindepth 1 -type d 2>/dev/null)\" ]; then echo 'No subdirectories found in /mnt/lua-scripts. Downloading and extracting lua-scripts.tar.gz'; curl -L -o /mnt/lua-scripts/lua-scripts.tar.gz https://github.com/Sera-ai/sera-public-test/releases/download/sera/lua-scripts.tar.gz && tar -xzvf /mnt/lua-scripts/lua-scripts.tar.gz -C /mnt/lua-scripts; else echo 'Subdirectories found in /mnt/lua-scripts. Skipping download and extraction'; fi"]
+          command: ["sh", "-c", "set -x; ls -ld /mnt/lua-scripts; if [ -z \"$(find /mnt/lua-scripts -mindepth 1 -type d 2>/dev/null)\" ]; then echo 'No subdirectories found in /mnt/lua-scripts. Downloading and extracting lua-scripts.tar.gz'; curl -L -o /mnt/lua-scripts/lua-scripts.tar.gz https://github.com/Sera-ai/sera-artifacts/releases/download/v1.0.0/lua-scripts.tar.gz && tar -xzvf /mnt/lua-scripts/lua-scripts.tar.gz -C /mnt/lua-scripts; else echo 'Subdirectories found in /mnt/lua-scripts. Skipping download and extraction'; fi"]
           volumeMounts:
             - name: lua-scripts
               mountPath: /mnt/lua-scripts
