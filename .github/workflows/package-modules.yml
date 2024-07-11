@@ -40,7 +40,7 @@ jobs:
         path: node_modules.tar.gz
 
     - name: Package Lua Scripts contents
-      run: tar -czf lua-scripts.tar.gz -C sera-nginx-scripts .
+      run: tar -czf lua-scripts.tar.gz -C sera-nginx .
 
     - name: Upload lua-scripts artifact
       uses: actions/upload-artifact@v3
@@ -49,7 +49,7 @@ jobs:
         path: lua-scripts.tar.gz
 
     - name: Package mongodb-models contents
-      run: tar -czf mongodb-models.tar.gz -C sera-mongodb-scripts .
+      run: tar -czf mongodb-models.tar.gz -C sera-mongodb .
 
     - name: Upload mongodb-models artifact
       uses: actions/upload-artifact@v3
@@ -59,7 +59,7 @@ jobs:
 
     - name: Merge YAML files
       run: |
-        cd sera-k8s-scripts/deploy
+        cd sera-k8s/deploy
         echo "Merging YAML files..."
         MERGED_YAML="sera-deployment-single.yaml"
         > $MERGED_YAML  # Create an empty merged.yaml file
@@ -183,6 +183,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
       with:
         upload_url: ${{ steps.create_update_release.outputs.upload_url }}
-        asset_path: sera-k8s-scripts/deploy/sera-deployment-single.yaml
+        asset_path: sera-k8s/deploy/sera-deployment-single.yaml
         asset_name: sera-deployment-single.yaml
         asset_content_type: application/yaml

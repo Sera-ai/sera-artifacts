@@ -1,0 +1,7 @@
+# Sample etcd configuration file
+
+# Human-readable name for this member.
+name: "sera-etcd"
+
+# Path to the data directory.
+data-dir: "/var/lib/etcd"
