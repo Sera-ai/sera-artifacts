@@ -1,6 +1,7 @@
 ## Create
-kubectl apply -f ./.devcontainer/k8s/
-kubectl describe pod sera-pod -n sera-namespace
+=
+
+kubectl describe deployment sera-deployment -n sera-namespace
 
 
 
@@ -27,7 +28,7 @@ kubectl delete ingress --all -n sera-namespace
 kubectl delete resourcequota --all -n sera-namespace
 kubectl delete limitrange --all -n sera-namespace
 kubectl delete hpa --all -n sera-namespace
-kubectl apply -f ./k8s/
+kubectl apply -f ../k8s/
 
 
 
