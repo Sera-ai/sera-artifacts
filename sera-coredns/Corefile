@@ -1,8 +1,15 @@
 .:53 {
-    etcd {
-        endpoint http://127.0.0.1:2379
-        path /skydns
+    bind 0.0.0.0 ::  # Listen on both IPv4 and IPv6
+    
+    template ANY A {
+        answer "{{ .Name }} 60 IN A 172.18.0.3"
     }
+    
+    template ANY AAAA {
+        answer "{{ .Name }} 60 IN AAAA 172.18.0.3"  # Replace ::1 with the desired IPv6 address, if needed
+    }
+
+    forward . 8.8.8.8 4.4.4.4  # Fallback for non-matching requests
     log
     errors
 }
