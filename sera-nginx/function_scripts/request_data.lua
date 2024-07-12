@@ -1,8 +1,9 @@
 local ngx = ngx
 local cjson = require "cjson.safe"
+local resolver = require "resty.dns.resolver"
 
 -- Function to extract headers and target URL
-local function extract_headers_and_url(given_url)
+local function extract_headers_and_url(given_url, reg_host)
     local headers = ngx.req.get_headers()
     local target_url
 
@@ -15,8 +16,7 @@ local function extract_headers_and_url(given_url)
     end
 
     if not target_url then
-        ngx.log(ngx.ERR, 'No X-Forwarded-For header specified')
-        ngx.exit(ngx.HTTP_BAD_REQUEST)
+        target_url = reg_host
     end
 
     -- Append the request URI to the target URL to preserve the resource path
@@ -39,6 +39,39 @@ local function get_request_body(method)
         return ngx.req.get_body_data()
     end
     return nil
+end
+
+-- Function to resolve the hostname
+local function resolve_hostname(hostname)
+    local r, err = resolver:new{
+        nameservers = {"8.8.8.8", "8.8.4.4"},
+        retrans = 5,  -- Retries
+        timeout = 2000,  -- 2 sec
+    }
+
+    if not r then
+        ngx.log(ngx.ERR, "Failed to create the resolver: ", err)
+        return nil, err
+    end
+
+    local answers, err = r:query(hostname, {qtype = r.TYPE_A})
+    if not answers then
+        ngx.log(ngx.ERR, "Failed to query the DNS server: ", err)
+        return nil, err
+    end
+
+    if answers.errcode then
+        ngx.log(ngx.ERR, "Server returned error code: ", answers.errcode, ": ", answers.errstr)
+        return nil, answers.errstr
+    end
+
+    for _, ans in ipairs(answers) do
+        if ans.address then
+            return ans.address, nil
+        end
+    end
+
+    return nil, "No A record found"
 end
 
 
@@ -99,9 +132,16 @@ function split(str, delimiter)
     return result
 end
 
+-- Function to check if the hostname is an IP address
+local function is_ip_address(hostname)
+    return hostname:match("^%d+%.%d+%.%d+%.%d+$") ~= nil
+end
+
 return {
     get_request_body = get_request_body,
     extract_headers_and_url = extract_headers_and_url,
     mergeTables = mergeTables,
-    update_json_values = update_json_values
+    update_json_values = update_json_values,
+    resolve_hostname = resolve_hostname,
+    is_ip_address = is_ip_address
 }

@@ -10,8 +10,6 @@ local ngx = ngx
 local httpc = http.new()
 httpc:set_keepalive(60000, 100) -- keep connections alive for 60 seconds, max 100 connections
 
-
-
 -- Function to handle the response
 local function handle_response(res, host)
     if not res then
@@ -41,6 +39,8 @@ local function handle_response(res, host)
     ngx.thread.spawn(learning_mode.log_request, res, host)
 end
 
+
+
 -- Function to perform the request
 local function make_request()
     ngx.var.proxy_script_start_time = ngx.now()
@@ -67,7 +67,7 @@ local function make_request()
         ngx.log(ngx.ERR, 'No sera_hosts entry found for host: ', ngx.var.host)
     end
     
-    local headers, target_url = request_data.extract_headers_and_url(db_entry_host)
+    local headers, target_url = request_data.extract_headers_and_url(db_entry_host, ngx.var.scheme .. "://" .. ngx.var.host)
 
     local method = ngx.var.request_method
     local body = request_data.get_request_body(method)
@@ -78,17 +78,36 @@ local function make_request()
 
     local query_params = ngx.req.get_uri_args()
 
-    local res, err = httpc:request_uri(target_url, {
+    -- Resolve the hostname to IP address
+    local parsed_url = require("socket.url").parse(target_url)
+    local hostname = parsed_url.host
+
+    -- Replace hostname with resolved IP in the target URL
+    local resolved_url = target_url
+
+    if not request_data.is_ip_address(hostname) then
+        -- Resolve the hostname to IP address if it's not already an IP address
+        local ip, err = request_data.resolve_hostname(hostname)
+        if not ip then
+            ngx.log(ngx.ERR, "Failed to resolve hostname: ", hostname)
+            resolved_url = hostname
+        end
+        if ip then
+            resolved_url = target_url:gsub(hostname, ip)
+        end
+    end
+    
+    
+    headers["Host"] = hostname
+
+    -- Make the HTTP request using the resolved IP
+    local res, err = httpc:request_uri(resolved_url, {
         method = method,
         headers = headers,
         body = body,
         query = query_params,
         ssl_verify = false -- Add proper certificate verification as needed
     })
-
-    if err then
-        ngx.log(ngx.ERR, err)
-    end
 
     ngx.var.proxy_finish_time = ngx.now()
 
