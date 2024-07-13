@@ -37,8 +37,15 @@ local function validate_request(oas, request)
         return false, "Method not found"
     end
 
+    ngx.log(ngx.ERR, cjson.encode(method_spec.parameters))
+
     local required_params = method_spec.parameters or {}
 
+    if method_spec.parameters then
+        if method_spec.parameters.__array == 0 then
+            required_params = {}
+        end
+    end
     -- Use pairs to handle the parameter array more flexibly
     for key, param in pairs(required_params) do
         if param.required then

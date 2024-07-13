@@ -23,7 +23,7 @@ local function extract_hostname(url)
 end
 
 -- Function to perform the logging
-local function log_request(res, host)
+local function log_request(res)
 
 
     local log_httpc = http.new()
@@ -33,7 +33,7 @@ local function log_request(res, host)
 
     -- Ensure all variables are not nil
     local headers = ngx.req.get_headers() or {}
-    local target_url = host
+    local target_url = ngx.var.host
     local method = ngx.var.request_method or "unknown"
 
     if string.upper(method) == "OPTIONS" then

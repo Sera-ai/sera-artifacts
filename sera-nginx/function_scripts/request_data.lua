@@ -98,19 +98,26 @@ local function update_json_values(original, data, replacements, sera_res)
             if type(value) == "table" then
                 update_json_values(original, value, replacements, sera_res)
             else
-                ngx.log(ngx.ERR, "replacements: ", key)
-                ngx.log(ngx.ERR, "replacements: ", cjson.encode(replacements))
-                ngx.log(ngx.ERR, "replacements: ", replacements[key])
-                ngx.log(ngx.ERR, "replacements: ", cjson.encode(original))
-
-                local val_res = split(replacements[key], ".")
-                ngx.log(ngx.ERR, "val_res: ", cjson.encode(val_res))
-                if val_res[1] then
-                    if string.find(val_res[1], "body") then
-                        data[key] = original[replacements[val_res[2]]] or value
-                    else
-                        data[key] = sera_res[val_res[1]][val_res[2]] or value
+                -- ngx.log(ngx.ERR, "Replace Key: ", key)
+                -- ngx.log(ngx.ERR, "replacements: ", cjson.encode(replacements))
+                -- ngx.log(ngx.ERR, "Replace Key Obj: ", replacements[key])
+                -- ngx.log(ngx.ERR, "Replace Origin: ", cjson.encode(original))
+                if replacements[key] then
+                    local val_res = split(replacements[key], ".")
+                    ngx.log(ngx.ERR, "val_res: ", cjson.encode(val_res))
+                    if val_res[1] then
+                        if string.find(val_res[1], "body") then
+                            -- ngx.log(ngx.ERR, "value_res: ", val_res[2])
+                            -- ngx.log(ngx.ERR, "replacements: ", replacements[val_res[2]])
+                            -- ngx.log(ngx.ERR, "original: ", original[val_res[2]])
+                            data[key] = original[val_res[2]] or value
+                        else
+                            data[key] = sera_res[val_res[1]][val_res[2]] or value
+                        end
                     end
+                else
+                    ngx.log(ngx.ERR, "REPLACEMENT NOT FOUND " .. key)
+                    ngx.log(ngx.ERR, "replacements: ", cjson.encode(replacements))
                 end
             end
         end
@@ -120,6 +127,7 @@ end
 function split(str, delimiter)
     local result = {}
     local from = 1
+    ngx.log(ngx.ERR, str)
     -- Escape the delimiter if it's a special character
     local delim_pattern = delimiter:gsub("([%.%+%-%*%?%[%]%^%$%(%)%%])", "%%%1")
     local delim_from, delim_to = string.find(str, delim_pattern, from)

@@ -87,9 +87,7 @@ local function get_by_document_id(collection, document_id)
         -- Proceed with MongoDB operations
         local db = client:getDatabase("Sera")
         local col = db:getCollection(collection)
-        local normal_id = convert_hex_string_to_normal(document_id)
-        local object_id = mongo.ObjectId(normal_id)
-        local query = { _id = object_id }
+        local query = mongo.BSON{ _id = mongo.ObjectID(document_id) }
         local result = col:findOne(query):value()
         
         if not result then
