@@ -16,7 +16,7 @@ const dataSchema = new mongoose.Schema(
       type: String,
     },
     srcIp: {
-      required: true,
+      required: false,
       type: String,
     },
     ts: {
@@ -38,6 +38,10 @@ dataSchema.pre("save", async function (next) {
   // Automatically set the current timestamp for the 'ts' field
   if (!doc.ts) {
     doc.ts = Date.now();
+  }
+
+  if (!doc.srcIp) {
+    doc.srcIp = "127.0.0.1";
   }
 
   // Auto-increment the eventId

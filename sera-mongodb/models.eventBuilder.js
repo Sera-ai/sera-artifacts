@@ -3,14 +3,16 @@ const { seraConnection } = require("./db.handler");
 
 const dataSchema = new mongoose.Schema(
   {
-    nodes: {
+    nodes: [{
       required: true,
-      type: Array,
-    },
-    edges: {
+      type: mongoose.Types.ObjectId,
+      ref: "builder_nodes",
+    }],
+    edges: [{
       required: true,
-      type: Array,
-    },
+      type: mongoose.Types.ObjectId,
+      ref: "builder_edges",
+    }],
     slug: {
       required: true,
       type: String,

@@ -104,7 +104,7 @@ local function update_json_values(original, data, replacements, sera_res)
                 -- ngx.log(ngx.ERR, "Replace Origin: ", cjson.encode(original))
                 if replacements[key] then
                     local val_res = split(replacements[key], ".")
-                    ngx.log(ngx.ERR, "val_res: ", cjson.encode(val_res))
+                    -- ngx.log(ngx.ERR, "val_res: ", cjson.encode(val_res))
                     if val_res[1] then
                         if string.find(val_res[1], "body") then
                             -- ngx.log(ngx.ERR, "value_res: ", val_res[2])
@@ -117,7 +117,7 @@ local function update_json_values(original, data, replacements, sera_res)
                     end
                 else
                     ngx.log(ngx.ERR, "REPLACEMENT NOT FOUND " .. key)
-                    ngx.log(ngx.ERR, "replacements: ", cjson.encode(replacements))
+                    -- ngx.log(ngx.ERR, "replacements: ", cjson.encode(replacements))
                 end
             end
         end
@@ -145,11 +145,38 @@ local function is_ip_address(hostname)
     return hostname:match("^%d+%.%d+%.%d+%.%d+$") ~= nil
 end
 
+local function is_valid_json(str)
+    local success, result = pcall(cjson.decode, str)
+    return success
+end
+
+local function pretty_json(json_table, indent)
+    local result = {}
+    local indent = indent or 0
+    local padding = string.rep("  ", indent)
+
+    for k, v in pairs(json_table) do
+        local key = type(k) == "string" and string.format("%q", k) or k
+        if type(v) == "table" then
+            table.insert(result, string.format("%s%s: {", padding, key))
+            table.insert(result, pretty_json(v, indent + 1))
+            table.insert(result, string.format("%s}", padding))
+        else
+            local value = type(v) == "string" and string.format("%q", v) or tostring(v)
+            table.insert(result, string.format("%s%s: %s,", padding, key, value))
+        end
+    end
+
+    return table.concat(result, "\n")
+end
+
 return {
     get_request_body = get_request_body,
     extract_headers_and_url = extract_headers_and_url,
     mergeTables = mergeTables,
     update_json_values = update_json_values,
     resolve_hostname = resolve_hostname,
-    is_ip_address = is_ip_address
+    is_ip_address = is_ip_address,
+    is_valid_json = is_valid_json,
+    pretty_json = pretty_json
 }
