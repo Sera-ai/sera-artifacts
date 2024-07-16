@@ -40,36 +40,42 @@ local function validate_request(oas, request)
     ngx.log(ngx.ERR, cjson.encode(method_spec.parameters))
 
     local required_params = method_spec.parameters or {}
-
+    
     if method_spec.parameters then
         if method_spec.parameters.__array == 0 then
             required_params = {}
         end
     end
+    
     -- Use pairs to handle the parameter array more flexibly
     for key, param in pairs(required_params) do
-        if param.required then
-            if param["in"] == "query" then
-                if not request.query[param.name] then
-                    return false, "Required query parameter '" .. param.name .. "' not found"
-                end
-            elseif param["in"] == "header" then
-                local headers = request.headers
-                local header_value = headers[param.name]
-                if not header_value then
-                    return false, "Required header '" .. param.name .. "' not found"
-                end
-            elseif param["in"] == "path" then
-                if not ngx.var[param.name] then
-                    return false, "Required path parameter '" .. param.name .. "' not found"
-                end
-            elseif param["in"] == "cookie" then
-                if not request.cookies[param.name] then
-                    return false, "Required cookie parameter '" .. param.name .. "' not found"
+        if type(param) == "table" then  -- Check if param is a table
+            if param.required then
+                if param["in"] == "query" then
+                    if not request.query[param.name] then
+                        return false, "Required query parameter '" .. param.name .. "' not found"
+                    end
+                elseif param["in"] == "header" then
+                    local headers = request.headers
+                    local header_value = headers[param.name]
+                    if not header_value then
+                        return false, "Required header '" .. param.name .. "' not found"
+                    end
+                elseif param["in"] == "path" then
+                    if not ngx.var[param.name] then
+                        return false, "Required path parameter '" .. param.name .. "' not found"
+                    end
+                elseif param["in"] == "cookie" then
+                    if not request.cookies[param.name] then
+                        return false, "Required cookie parameter '" .. param.name .. "' not found"
+                    end
                 end
             end
+        else
+            ngx.log(ngx.ERR, "Invalid parameter entry at index " .. tostring(key))
         end
     end
+    
 
     return true
 end
