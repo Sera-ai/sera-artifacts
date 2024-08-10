@@ -47,7 +47,7 @@ local function make_request()
 
     local db_entry_host = nil
     ngx.log(ngx.ERR, ngx.var.host)
-    
+
     local x_forwarded_for = ngx.req.get_headers()["X-Forwarded-For"]
     local hostname
 
@@ -56,6 +56,10 @@ local function make_request()
     else
         hostname = ngx.var.host
     end
+
+    ngx.log(ngx.ERR, ngx.var.host)
+    ngx.log(ngx.ERR, hostname)
+
         
     local query = { hostname = hostname }
     local sera_hosts_json, err = mongo_handler.get_settings("sera_hosts", query)
