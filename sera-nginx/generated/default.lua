@@ -48,6 +48,15 @@ local function make_request()
     local db_entry_host = nil
     ngx.log(ngx.ERR, ngx.var.host)
 
+    local headers = ngx.req.get_headers()
+
+    for key, value in pairs(headers) do
+        if type(value) == "table" then
+            value = table.concat(value, ", ")
+        end
+        ngx.log(ngx.ERR, key .. ": " .. value)
+    end
+
     local x_forwarded_for = ngx.req.get_headers()["X-Forwarded-For"]
     local hostname
 
