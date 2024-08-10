@@ -58,6 +58,7 @@ local function make_request()
     end
 
     ngx.log(ngx.ERR, ngx.var.host)
+    ngx.log(ngx.ERR, x_forwarded_for)
     ngx.log(ngx.ERR, hostname)
 
         
