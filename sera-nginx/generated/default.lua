@@ -135,7 +135,7 @@ local function make_request()
 
     ngx.var.proxy_finish_time = ngx.now()
 
-    handle_response(res, ngx.var.host)
+    handle_response(res, hostname)
 end
 
 return {
