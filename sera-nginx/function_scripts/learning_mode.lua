@@ -23,7 +23,7 @@ local function extract_hostname(url)
 end
 
 -- Function to perform the logging
-local function log_request(res)
+local function log_request(res, host)
 
 
     local log_httpc = http.new()
@@ -118,7 +118,7 @@ local function log_request(res)
     local res_body = res.body or {}
 
     local log_body = cjson.encode({
-        hostname = extract_hostname(target_url),
+        hostname = host,
         path = ngx.var.uri or "unknown",
         method = method,
         response_time = ngx.var.request_time * 1000,
