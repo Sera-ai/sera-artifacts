@@ -104,20 +104,20 @@ local function make_request()
 
     -- Resolve the hostname to IP address
     local parsed_url = require("socket.url").parse(target_url)
-    local hostname = parsed_url.host
+    local parsed_hostname = parsed_url.host
 
     -- Replace hostname with resolved IP in the target URL
     local resolved_url = target_url
 
-    if not request_data.is_ip_address(hostname) then
+    if not request_data.is_ip_address(parsed_hostname) then
         -- Resolve the hostname to IP address if it's not already an IP address
-        local ip, err = request_data.resolve_hostname(hostname)
+        local ip, err = request_data.resolve_hostname(parsed_hostname)
         if not ip then
-            ngx.log(ngx.ERR, "Failed to resolve hostname: ", hostname)
-            resolved_url = hostname
+            ngx.log(ngx.ERR, "Failed to resolve hostname: ", parsed_hostname)
+            resolved_url = parsed_hostname
         end
         if ip then
-            resolved_url = target_url:gsub(hostname, ip)
+            resolved_url = target_url:gsub(parsed_hostname, ip)
         end
     end
     
