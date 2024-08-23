@@ -88,10 +88,10 @@ local function make_request()
     end
 
     if not db_entry_host then
-        ngx.log(ngx.ERR, 'No sera_hosts entry found for host: ', ngx.var.host)
+        ngx.log(ngx.ERR, 'No sera_hosts entry found for host: ', hostname)
     end
     
-    local headers, target_url = request_data.extract_headers_and_url(db_entry_host, ngx.var.scheme .. "://" .. ngx.var.host)
+    local headers, target_url = request_data.extract_headers_and_url(db_entry_host, ngx.var.scheme .. "://" .. hostname)
 
     local method = ngx.var.request_method
     local body = request_data.get_request_body(method)
@@ -103,26 +103,33 @@ local function make_request()
     local query_params = ngx.req.get_uri_args()
 
     -- Resolve the hostname to IP address
-    local parsed_url = require("socket.url").parse(target_url)
+    local parsed_url = require("socket.url").parse(ngx.var.scheme .. "://" .. target_url)
     local parsed_hostname = parsed_url.host
 
     -- Replace hostname with resolved IP in the target URL
     local resolved_url = target_url
 
-    if not request_data.is_ip_address(parsed_hostname) then
-        -- Resolve the hostname to IP address if it's not already an IP address
-        local ip, err = request_data.resolve_hostname(parsed_hostname)
-        if not ip then
-            ngx.log(ngx.ERR, "Failed to resolve hostname: ", parsed_hostname)
-            resolved_url = parsed_hostname
-        end
-        if ip then
-            resolved_url = target_url:gsub(parsed_hostname, ip)
-        end
-    end
+    ngx.log(ngx.ERR, "Parsed hostname: ", parsed_hostname)
+
+    resolved_url = ngx.var.scheme .. "://" .. parsed_hostname .. ngx.var.uri
+    -- if not request_data.is_ip_address(parsed_hostname) then
+    --     -- Resolve the hostname to IP address if it's not already an IP address
+    --     local ip, err = request_data.resolve_hostname(parsed_hostname)
+    --     if not ip then
+    --         ngx.log(ngx.ERR, "Failed to resolve hostname: ", parsed_hostname)
+            
+    --     end
+    --     if ip then
+    --         ngx.log(ngx.ERR, "Resolved IP: " .. ip)
+    --         resolved_url = ngx.var.scheme .. "://" .. target_url:gsub(parsed_hostname, ip)
+    --     end
+    -- end
     
     
     headers["Host"] = hostname
+
+
+    ngx.log(ngx.ERR, "Final request addess: " .. resolved_url)
 
     -- Make the HTTP request using the resolved IP
     local res, err = httpc:request_uri(resolved_url, {
@@ -130,7 +137,9 @@ local function make_request()
         headers = headers,
         body = body,
         query = query_params,
-        ssl_verify = false -- Add proper certificate verification as needed
+        ssl_verify = true,
+        ssl_verify_depth = 2,
+        ssl_trusted_certificate = "/etc/ssl/certs/ca-certificates.crt"  -- Specify your CA bundle path
     })
 
     ngx.var.proxy_finish_time = ngx.now()

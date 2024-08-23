@@ -142,6 +142,9 @@ end
 
 -- Function to check if the hostname is an IP address
 local function is_ip_address(hostname)
+    if not hostname then
+        return false
+    end
     return hostname:match("^%d+%.%d+%.%d+%.%d+$") ~= nil
 end
 
