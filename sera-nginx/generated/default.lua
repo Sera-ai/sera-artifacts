@@ -99,11 +99,12 @@ local function make_request()
     ngx.var.proxy_start_time = ngx.now()
 
     ngx.log(ngx.ERR, "Making request to: ", target_url)
+    ngx.log(ngx.ERR, "Making request to: ", ngx.var.scheme)
 
     local query_params = ngx.req.get_uri_args()
 
     -- Resolve the hostname to IP address
-    local parsed_url = require("socket.url").parse(ngx.var.scheme .. "://" .. target_url)
+    local parsed_url = require("socket.url").parse(target_url)
     local parsed_hostname = parsed_url.host
 
     -- Replace hostname with resolved IP in the target URL
@@ -130,6 +131,7 @@ local function make_request()
 
 
     ngx.log(ngx.ERR, "Final request addess: " .. resolved_url)
+    
 
     -- Make the HTTP request using the resolved IP
     local res, err = httpc:request_uri(resolved_url, {
@@ -137,9 +139,7 @@ local function make_request()
         headers = headers,
         body = body,
         query = query_params,
-        ssl_verify = true,
-        ssl_verify_depth = 2,
-        ssl_trusted_certificate = "/etc/ssl/certs/ca-certificates.crt"  -- Specify your CA bundle path
+        ssl_verify = false
     })
 
     ngx.var.proxy_finish_time = ngx.now()

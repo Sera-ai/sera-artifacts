@@ -12,11 +12,11 @@ local function extract_headers_and_url(given_url, reg_host)
     end
     
     if not given_url then
-        target_url = headers["X-Forwarded-For"]
+        target_url = ngx.var.scheme .. "://" .. headers["X-Forwarded-For"]
     end
 
     if not target_url then
-        target_url = reg_host
+        target_url = ngx.var.scheme .. "://" .. reg_host
     end
 
     -- Append the request URI to the target URL to preserve the resource path
