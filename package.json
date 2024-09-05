@@ -34,10 +34,6 @@
       "socket.io": "^4.7.2",
       "socket.io-client": "^4.7.2",
       "ws": "^8.17.0"
-    },
-    "devDependencies": {
-      "jsdoc": "^4.0.3",
-      "jsdoc-to-markdown": "^9.0.0"
     }
   }
   
