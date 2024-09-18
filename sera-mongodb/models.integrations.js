@@ -14,6 +14,11 @@ const dataSchema = new mongoose.Schema({
         required: false,
         type: String
     },
+    image: {
+        required: false,
+        type: mongoose.Types.ObjectId, // Reference to the ObjectId in the fs.files collection
+        ref: 'fs.files'  // Reference the GridFS files collection
+    },
     hostname: {
         required: false,
         type: String
