@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { seraConnection } = require('./db.handler');
+const { seraConnection } = require('./db.handler.cjs');
 
 const dataSchema = new mongoose.Schema(
     {

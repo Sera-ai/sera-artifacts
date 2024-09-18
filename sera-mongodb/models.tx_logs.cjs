@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { nginxConnection } = require("./db.handler");
+const { nginxConnection } = require("./db.handler.cjs");
 
 const dataSchema = new mongoose.Schema(
     {
